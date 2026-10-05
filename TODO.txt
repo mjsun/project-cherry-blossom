@@ -1,0 +1,51 @@
+1. Data prep:
+Split the document into lines(or short blocks)
+Label each one:
+    1 = chunk boundary
+    0 = not a boundary
+
+eg.
+    "RISK FACTORS"                          → 1
+    "You should carefully consider..."      → 0
+    "Retail Properties Have Special Risks"  → 1
+    "Retail properties are subject to..."   → 0
+
+Approach: LLM for initial labeling + manual fine tune
+
+Extract the document into lines/blocks
+Send batches of lines to an LLM with a prompt like: "For each line, label 1 if it starts a new section/subsection/loan, else 0"
+Save the LLM's labels (line → 0/1)
+You review a sample, fix mistakes (the "manual fine-tune" of the labels)
+That corrected set = your training data
+
+
+Options of LLM for labeling
+For a free local LLM to auto-label, good options (run via Ollama — easiest local runner):
+Best balance (need ~8–16 GB RAM):
+Llama 3.1 8B — strong general model, good at following labeling instructions
+Qwen 2.5 7B — excellent at structured/instruction tasks, often better than Llama for this
+Lighter (4–8 GB RAM):
+Llama 3.2 3B — smaller, faster, still decent
+Phi-3 mini (3.8B) — tiny, surprisingly capable
+Local DeepSeek options:
+DeepSeek-R1 distilled (7B / 8B) — reasoning-focused; good at "think through which lines are boundaries." Available as deepseek-r1:7b / :8b in Ollama.
+DeepSeek-V2/V3 — the full models are too big for local (hundreds of GB). Stick to the distilled 7B/8B for your machine.
+
+Qwen 2.5 7B 
+Install Ollama (ollama --version to confirm)
+ollama pull qwen2.5:7b
+Smoke test it responds to a labeling prompt
+
+Labeling with Qwen. Here's the plan before I write code:
+
+How it works:
+
+Read cleaned.txt (2,521 lines)
+Send lines to Qwen in batches (e.g. 20 at a time) with a prompt defining your 9 labels
+Qwen returns a label per line
+Save as line<TAB>label to a file you'll review
+
+Two things to decide first:
+
+How to call Qwen from Python — via Ollama's API. Simplest is the ollama Python package (pip install ollama), or plain HTTP to localhost:11434. Which do you have / prefer?
+The label definitions — Qwen needs a crisp one-line definition of each of your 9 labels (COVER, SECTION, SUBSECTION, TERM, BODY, TABLE_TITLE, TABLE_ROW, FOOTNOTE, NOISE) in the prompt, or it'll be inconsistent.

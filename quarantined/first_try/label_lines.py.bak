@@ -1,0 +1,88 @@
+import json
+import sys
+import ollama
+import os
+
+MODEL = 'qwen2.5:7b'
+BATCH = 20
+
+LABELS = ["COVER", "SECTION", "SUBSECTION", "TERM", "BODY", "TABLE_TITLE", "TABLE_ROW", "FOOTNOTE", "NOISE"]
+DEFINITIONS = """
+COVER       - front/title-page content: deal name, dollar amount, "PROSPECTUS SUPPLEMENT", sponsor/depositor names, filing info.
+SECTION     - a major section heading, e.g. "RISK FACTORS", "Description of the Mortgage Pool".
+SUBSECTION  - a sub-heading under a section, e.g. "Hotel Properties Have Special Risks".
+TERM        - a key->value definition block: label plus its explanation, e.g. "Depositor | J.P. Morgan Chase ...".
+BODY        - a normal paragraph of running prose.
+TABLE_TITLE - the name/caption of a table, e.g. "Overview of Grace Periods".
+TABLE_ROW   - one row of table data (cells joined by |), e.g. "Class A-1 | 23,396,000 | 5.0170% | Fixed".
+FOOTNOTE    - a footnote line, usually starting with a number/symbol in parens, e.g. "(1) Subject to a permitted variance...".
+NOISE       - junk with no standalone meaning: nav links, table-of-contents entries ending in a page number like "... | S-190", stray fragments."""
+
+PROMPT = """You label lines from a CMBS prospectus. Use EXACTLY one of these labels per line:
+ 
+{defs}
+ 
+Return ONLY a JSON array of label strings, one per input line, in order.
+No explanations. Example output: ["SECTION","BODY","TABLE_ROW"]
+ 
+Lines to label:
+{lines}"""
+
+
+def label_batch(lines):
+    numbered = "\n".join("%d. %s" % (i+1, ln) for i, ln in enumerate(lines))
+
+    prompt = PROMPT.format(defs=DEFINITIONS, lines=numbered)
+
+    res = ollama.chat(
+        model=MODEL,
+        messages=[{'role': 'user', 'content': prompt}],
+        options = {'temperature': 0},
+    )
+
+    text = res['message']['content'].strip()
+
+    start, end = text.find("["), text.rfind("]")
+
+    labels = json.loads(text[start:end + 1])
+    processed=[]
+    for l in labels:
+        l = str(l).strip().upper()
+        processed.append(l if l in LABELS else 'BODY')
+    return processed
+
+
+def main():
+
+    input_path = sys.argv[1] if len(sys.argv) > 1 else 'cleaned_data/file1.txt'
+    output_path = sys.argv[2] if len(sys.argv) > 2 else 'labeled_data/file1.tsv'
+    out_dir = os.path.dirname(output_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    with open(input_path, encoding='utf-8') as f:
+        lines = [ln.rstrip('\n') for ln in f if ln.strip()]
+
+    res = []
+
+    for i in range(0, len(lines), BATCH):
+        batch = lines[i: i+BATCH]
+        try:
+            labels= label_batch(batch)
+        except Exception as e:
+            print('Batch %d failed (%s) -> defaulting to BODY' % (i, e))
+            labels = ["BODY"] * len(batch)
+        if len(labels) < len(batch):
+            labels = labels + ["BODY"] * (len(batch) - len(labels))   # add exactly what's missing
+        elif len(labels) > len(batch):
+            labels = labels[:len(batch)] 
+        res.extend(zip(batch, labels))
+        print('labeled %d / %d' % (min(i+BATCH, len(lines)), len(lines)))
+
+    with open(output_path, 'w', encoding='utf-8') as f:
+        for line, label in res:
+            f.write('%s\t%s\n' % (line, label))
+
+    print('wrote %d rows -> %s' % (len(res), output_path))
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,100 @@
+Filed Pursuant to Rule 424(b)(5) Registration File No.: 333-140804
+PROSPECTUS SUPPLEMENT (To Prospectus Dated April 18, 2008)
+$993,923,000 (Approximate) J.P. Morgan Chase Commercial Mortgage Securities Trust 2008-C2 Issuing Entity
+J.P. Morgan Chase Commercial Mortgage Securities Corp. Depositor
+JPMorgan Chase Bank, N.A.
+PNC Bank, National Association
+CIBC Inc.
+Sponsors and Mortgage Loan Sellers
+Commercial Mortgage Pass-Through Certificates, Series 2008-C2
+J.P. Morgan Chase Commercial Mortgage Securities Corp. is offering certain classes of the Commercial Mortgage Pass-Through Certificates, Series 2008-C2, which represent the beneficial ownership interests in the issuing entity, which will be a trust named J.P. Morgan Chase Commercial Mortgage Securities Trust 2008-C2. The assets of the issuing entity will primarily be 79 fixed rate mortgage loans secured by first liens on 107 commercial properties and 11 multifamily and manufactured housing community properties and are generally the sole source of payments on the Series 2008-C2 certificates. Credit enhancement will be provided by certain classes of subordinate certificates that will be subordinate to certain classes of senior certificates as described under ‘‘ Description of the Certificates—Subordination; Allocation of Collateral Support Deficit ’’ in this prospectus supplement. In addition, JPMorgan Chase Bank, N.A. will provide an interest rate swap agreement for the benefit of the Class A-4FL certificates as described under ‘‘ Description of the Swap Contract ’’ in this prospectus supplement. The Series 2008-C2 certificates are interests in the issuing entity only and are not interests in or obligations of J.P. Morgan Chase Commercial Mortgage Securities Corp., the sponsors, the mortgage loan sellers or any of their respective affiliates, and neither the Series 2008-C2 certificates nor the underlying mortgage loans are insured or guaranteed by any governmental agency or any other person or entity. Each class of certificates will be entitled to receive monthly distributions of interest and/or principal on the 12th day of each month, commencing on June 12, 2008.
+Initial Class Certificate Balance or Notional Amount (1) | Initial Approx. Pass-Through Rate | Pass-Through Rate Description | Assumed Final Distribution Date (3) | Expected Ratings (Moody’s/Fitch) (5) | Rated Final Distribution Date (3)
+Class A-1 | 23,396,000 | 5.0170% | Fixed | September 12, 2012 | Aaa/AAA | February 12, 2051
+Class A-2 | 68,126,000 | 5.8550% | Fixed | March 12, 2013 | Aaa/AAA | February 12, 2051
+Class A-3 | 105,514,000 | 6.2880% | Fixed | October 12, 2014 | Aaa/AAA | February 12, 2051
+Class A-4 | 354,554,000 | 6.0680% | Fixed | January 12, 2018 | Aaa/AAA | February 12, 2051
+Class A-4FL | 145,000,000 | (7) | LIBOR+ 1.5000% | Floating (8) | January 12, 2018 | Aaa/AAA (9) | February 12, 2051
+Class A-SB | 54,460,000 | 6.1250% | Fixed (10) | April 12, 2017 | Aaa/AAA | February 12, 2051
+Class A-1A | 65,075,000 | 5.9980% | Fixed | January 12, 2018 | Aaa/AAA | February 12, 2051
+Class X | 1,165,893,035 | (11) | 0.6474% | Variable (12) | April 12, 2018 | Aaa/AAA | February 12, 2051
+Class A-M | 116,589,000 | 6.7988% | WAC (13) | January 12, 2018 | Aaa/AAA | February 12, 2051
+Class A-J | 61,209,000 | 6.7988% | WAC (13) | January 12, 2018 | Aaa/AAA | February 12, 2051
+(Footnotes to table beginning on page S-9)
+You should carefully consider the risk factors beginning on page S-42 of this prospectus supplement and page 9 of the prospectus .
+Neither the certificates nor the underlying mortgage loans are insured or guaranteed by any governmental agency or instrumentality or any other person or entity.
+The certificates will represent interests in the issuing entity only. They will not represent interests in or obligations of the depositor, any of its affiliates or any other entity.
+The Securities and Exchange Commission and state regulators have not approved or disapproved of the offered certificates or passed upon the adequacy or accuracy of this prospectus supplement or the accompanying prospectus. Any representation to the contrary is a criminal offense. J.P. Morgan Chase Commercial Mortgage Securities Corp. will not list the offered certificates on any securities exchange or on any automated quotation system of any securities association.
+The underwriters, J.P. Morgan Securities Inc., CIBC World Markets Corp. and PNC Capital Markets LLC, will purchase the offered certificates from J.P. Morgan Chase Commercial Mortgage Securities Corp. and will offer them to the public at negotiated prices, plus, in certain cases, accrued interest, determined at the time of sale. J.P. Morgan Securities Inc. and CIBC World Markets Corp. are acting as co-lead managers for this offering. PNC Capital Markets LLC is acting as a co-manager for this offering. J.P. Morgan Securities Inc. is acting as sole bookrunner for this offering.
+The underwriters expect to deliver the offered certificates to purchasers in book-entry form only through the facilities of The Depository Trust Company in the United States and Clearstream Banking, société anonyme and Euroclear Bank, as operator of the Euroclear System, in Europe, against payment in New York, New York on or about May 8, 2008. We expect to receive from this offering approximately 102.8% of the initial aggregate principal balance of the offered certificates, plus accrued interest (except with respect to the Class A-4FL Certificates) from May 1, 2008, before deducting expenses payable by us.
+JPMorgan | CIBC World Markets
+Co-Lead Manager and Sole Bookrunner | Co-Lead Manager
+PNC Capital Markets LLC
+Co-Manager
+April 30, 2008
+TABLE OF CONTENTS
+Summary of Certificates | S-9
+Summary of Terms | S-11
+Risk Factors | S-42
+Geographic Concentration Entails Risks | S-42
+Risks Relating to Mortgage Loan Concentrations | S-43
+Mortgage Loans Secured By More Than One Property Entail Certain Risks | S-45
+The Borrower’s Form of Entity May Cause Special Risks | S-45
+Ability to Incur Other Borrowings Entails Risk | S-47
+Borrower May Be Unable to Repay Remaining Principal Balance on Maturity Date | S-50
+The Prospective Performance of the Commercial, Multifamily and Manufactured Housing Community Mortgage Loans Included in the Trust Fund Should Be Evaluated Separately from the Performance of the Mortgage Loans in Any of Our Other Trusts | S-51
+Commercial and Multifamily Lending Is Dependent Upon Net Operating Income | S-51
+Tenant Concentration Entails Risk | S-53
+Certain Additional Risks Relating to Tenants | S-54
+Risks Related to Redevelopment and Renovation at the Mortgaged Properties | S-55
+Mortgaged Properties Leased to Borrowers or Borrower Affiliated Entities Also Have Risks | S-56
+Tenant Bankruptcy Entails Risks | S-56
+Mortgage Loans Are Nonrecourse and Are Not Insured or Guaranteed | S-56
+Retail Properties Have Special Risks | S-57
+Office Properties Have Special Risks | S-58
+Hotel Properties Have Special Risks | S-58
+Risks Relating to Affiliation with a Franchise or Hotel Management Company | S-59
+Industrial Properties Have Special Risks | S-60
+Multifamily Properties Have Special Risks | S-61
+Manufactured Housing Communities Have Special Risks | S-62
+Mixed-Use Facilities Have Special Risks | S-62
+Self Storage Properties Have Special Risks | S-62
+Parking Garage Facilities Have Special Risks | S-63
+Lack of Skillful Property Management Entails Risks | S-63
+Some Mortgaged Properties May Not Be Readily Convertible to Alternative Uses | S-63
+Condominium or Cooperative Ownership May Limit Use and Improvements | S-64
+Mortgage Loans Secured by Leasehold Interests May Expose Investors to Greater Risks of Default and Loss | S-64
+Limitations of Appraisals | S-65
+Risks Relating to Underwritten Net Cash Flow | S-66
+Potential Conflicts of Interest | S-66
+Special Servicer May Be Directed to Take Actions | S-68
+Bankruptcy Proceedings Entail Certain Risks | S-69
+Risks Relating to Prepayments and Repurchases | S-70
+Optional Early Termination of the Trust Fund May Result in an Adverse Impact on Your Yield or May Result in a Loss | S-72
+Sensitivity to LIBOR and Yield Considerations | S-72
+Risks Relating to the Swap Contract | S-73
+Mortgage Loan Sellers May Not Be Able to Make a Required Repurchase or Substitution of a Defective Mortgage Loan | S-74
+Risks Relating to Interest on Advances and Special Servicing Compensation | S-74
+Risks of Limited Liquidity and Market Value | S-74
+The Market Value of the Offered Certificates May Be Adversely Affected by Factors Unrelated to the Performance of the Offered Certificates and the Mortgage Loans, such as Fluctuations in Interest Rates and the Supply and Demand of CMBS Generally | S-75
+Declining Value of Residential Mortgage-Backed Securities and other Asset-Backed or Structured Products May Adversely Affect CMBS | S-75
+Different Timing of Mortgage Loan Amortization Poses Certain Risks | S-76
+Subordination of Subordinate Offered Certificates | S-76
+Limited Information Causes Uncertainty | S-76
+Environmental Risks Relating to the Mortgaged Properties | S-76
+Tax Considerations Relating to Foreclosure | S-77
+Risks Associated with One Action Rules | S-78
+Potential Absence of Attornment Provisions Entails Risks | S-78
+Property Insurance, Including Terrorism Insurance, May Not Be Sufficient | S-78
+Zoning Compliance and Use Restrictions May Adversely Affect Property Value | S-81
+Risks Relating to Costs of Compliance with Applicable Laws and Regulations | S-81
+No Reunderwriting of the Mortgage Loans | S-82
+Litigation or Other Legal Proceedings Could Adversely Affect the Mortgage Loans | S-82
+Risks Relating to Book-Entry Registration | S-82
+Risks Relating to Inspections of Properties | S-82
+Certain of the Mortgage Loans Lack Customary Provisions | S-82
+Mortgage Electronic Registration Systems (MERS) | S-83
+Other Risks | S-83
+Description of the Mortgage Pool | S-84
+General | S-84
+Additional Debt | S-85
+The Block at Orange Whole Loan | S-89

@@ -36,8 +36,8 @@ def extract_lines(html):
 
 
 def main():
-    input_path = 'sample_data/file1.htm'
-    output_path = 'extracted_data/file1.txt'
+    input_path = 'sample_data/file6/file6.html'
+    output_path = 'extracted_data/file6.txt'
     with open(input_path, encoding="cp1252") as f:
         html = f.read()
     lines = extract_lines(html)

@@ -158,8 +158,8 @@ def label_batch(lines):
 
 def main():
 
-    input_path = sys.argv[1] if len(sys.argv) > 1 else 'cleaned_data/file1.txt'
-    output_path = sys.argv[2] if len(sys.argv) > 2 else 'labeled_data/file1.tsv'
+    input_path = sys.argv[1] if len(sys.argv) > 1 else 'cleaned_data/file6.txt'
+    output_path = sys.argv[2] if len(sys.argv) > 2 else 'labeled_data/file6.tsv'
     out_dir = os.path.dirname(output_path)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)

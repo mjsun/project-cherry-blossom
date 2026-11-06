@@ -17,8 +17,8 @@ def clean_row(line):
     return out
 
 def main():
-    input_path = 'extracted_data/file1.txt'
-    output_path = 'cleaned_data/file1.txt'
+    input_path = 'extracted_data/file6.txt'
+    output_path = 'cleaned_data/file6.txt'
     cleaned = []
     with open(input_path, encoding='utf-8') as f:
         for raw in f:

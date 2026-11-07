@@ -14,7 +14,8 @@ import glob
 import json
 import chromadb
 import ollama
-
+from typing import TypedDict
+from langgraph.graph import StateGraph, END
 from chunk_filing import (
     process_file,
     get_local_context,
@@ -30,6 +31,10 @@ COLLECTION_NAME = "cmbs_filings"
 LABELED_DIR = "./labeled_data"
 TOP_K = 25
 
+class State(TypedDict):
+    question: str
+    route: str
+    answer: str
 
 def embed(text: str):
     return ollama.embeddings(model=EMBED_MODEL, prompt=text)["embedding"]
@@ -333,8 +338,90 @@ def answer_question(collection, chunks_by_file, loan_index, aliases, question: s
     ])
     return response["message"]["content"]
 
+def build_graph(collection, chunks_by_file, loan_index, aliases):
+
+    def ask_llm(prompt: str) -> str:
+        response = ollama.chat(model=ANSWER_MODEL, messages=[
+            {"role": "user", "content": prompt},
+        ])
+        return response["message"]["content"]
+
+    def answer_from_context(question: str, positions) -> str:
+        context = build_context(chunks_by_file, positions)
+        prompt = (
+            "Answer the question using ONLY the context below. "
+            "If the context doesn't contain the answer, say so -- don't guess.\n\n"
+            f"Context:\n{context}\n\n"
+            f"Question: {question}\n"
+            "Answer:"
+        )
+        return ask_llm(prompt)
+
+    def classify(state: State) -> State:
+        route = classify_query(state["question"], aliases)
+        print(f"  [route: {route}]")
+        return {"route": route}
+
+    def node_named(state: State) -> State:
+        named_keys = _keys_from_names(state["question"], aliases)
+        print(f"  [named-loan match: {named_keys}]")
+        positions = resolve_keys_to_positions(loan_index, named_keys)
+        return {"answer": answer_from_context(state["question"], positions)}
+
+    def node_structured(state: State) -> State:
+        db_answer = handle_structured_query(state["question"])
+        prompt = (
+            "You are answering a question about CMBS loan data. "
+            "Use ONLY the data below to answer. Be concise.\n\n"
+            f"Data:\n{db_answer}\n\n"
+            f"Question: {state['question']}\n"
+            "Answer:"
+        )
+        return {"answer": ask_llm(prompt)}
+
+    def node_narrative(state: State) -> State:
+        hits = retrieve(collection, state["question"])
+        positions = positions_from_hits(hits)
+        return {"answer": answer_from_context(state["question"], positions)}
+
+    graph = StateGraph(State)
+    graph.add_node("classify", classify)
+    graph.add_node("named", node_named)
+    graph.add_node("structured", node_structured)
+    graph.add_node("narrative", node_narrative)
+
+    graph.set_entry_point("classify")
+    graph.add_conditional_edges("classify", lambda s: s["route"], {
+        "named": "named",
+        "structured": "structured",
+        "narrative": "narrative",
+    })
+    graph.add_edge("named", END)
+    graph.add_edge("structured", END)
+    graph.add_edge("narrative", END)
+
+    return graph.compile()
 
 # ── main ──────────────────────────────────────────────────────────
+
+# if __name__ == "__main__":
+#     client = chromadb.PersistentClient(path=DB_DIR)
+#     collection = client.get_collection(COLLECTION_NAME)
+
+#     chunks_by_file, all_loans = load_all(LABELED_DIR)
+#     loan_index = build_loan_index(chunks_by_file)
+#     aliases = _build_alias_table(all_loans)
+
+#     questions = [
+#         "What is the Block at Orange loan?",
+#         "How many loans are in California?",
+#         "What is the average DSCR by property type?",
+#         "What are the risk factors for this trust?",
+#     ]
+
+#     for q in questions:
+#         print(f"\nQ: {q}")
+#         print(answer_question(collection, chunks_by_file, loan_index, aliases, q))
 
 if __name__ == "__main__":
     client = chromadb.PersistentClient(path=DB_DIR)
@@ -343,6 +430,8 @@ if __name__ == "__main__":
     chunks_by_file, all_loans = load_all(LABELED_DIR)
     loan_index = build_loan_index(chunks_by_file)
     aliases = _build_alias_table(all_loans)
+
+    app = build_graph(collection, chunks_by_file, loan_index, aliases)
 
     questions = [
         "What is the Block at Orange loan?",
@@ -353,4 +442,5 @@ if __name__ == "__main__":
 
     for q in questions:
         print(f"\nQ: {q}")
-        print(answer_question(collection, chunks_by_file, loan_index, aliases, q))
+        result = app.invoke({"question": q})
+        print(result["answer"])

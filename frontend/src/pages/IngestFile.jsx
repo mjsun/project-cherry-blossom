@@ -2,16 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function IngestFile() {
-  const [link, setLink] = useState("");
+  const [url, setLink] = useState("");
   const [filename, setFilename] = useState("");
   const [result, setResult] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:8000/file/", {
+    fetch("http://localhost:8000/api/file_ingestion/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ link, filename }),
+      body: JSON.stringify({ url, filename }),
     })
       .then((res) => res.json())
       .then((data) => setResult(data.success ? data.content : "Failed to ingest prospectus."))
@@ -42,7 +42,7 @@ function IngestFile() {
             className="qa-input"
             type="text"
             placeholder="https://example.com/prospectus.pdf"
-            value={link}
+            value={url}
             onChange={(e) => setLink(e.target.value)}
             required
           />

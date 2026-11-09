@@ -290,54 +290,6 @@ def build_context(chunks_by_file, positions, before=1, after=1):
         blocks.append(f"[{deal_id} lines {chunk.start_line}-{chunk.end_line}]\n{window}")
     return "\n\n---\n\n".join(blocks)
 
-
-# ── answer generation ─────────────────────────────────────────────
-
-def answer_question(collection, chunks_by_file, loan_index, aliases, question: str):
-    route = classify_query(question, aliases)
-    print(f"  [route: {route}]")
-
-    # path 2: structured
-    if route == "structured":
-        db_answer = handle_structured_query(question)
-        # wrap in LLM for natural language response
-        prompt = (
-            "You are answering a question about CMBS loan data. "
-            "Use ONLY the data below to answer. Be concise.\n\n"
-            f"Data:\n{db_answer}\n\n"
-            f"Question: {question}\n"
-            "Answer:"
-        )
-        response = ollama.chat(model=ANSWER_MODEL, messages=[
-            {"role": "user", "content": prompt},
-        ])
-        return response["message"]["content"]
-
-    # path 1: named-loan
-    if route == "named":
-        named_keys = _keys_from_names(question, aliases)
-        print(f"  [named-loan match: {named_keys}]")
-        positions = resolve_keys_to_positions(loan_index, named_keys)
-    # path 3: narrative
-    else:
-        hits = retrieve(collection, question)
-        positions = positions_from_hits(hits)
-
-    context = build_context(chunks_by_file, positions)
-
-    prompt = (
-        "Answer the question using ONLY the context below. "
-        "If the context doesn't contain the answer, say so -- don't guess.\n\n"
-        f"Context:\n{context}\n\n"
-        f"Question: {question}\n"
-        "Answer:"
-    )
-
-    response = ollama.chat(model=ANSWER_MODEL, messages=[
-        {"role": "user", "content": prompt},
-    ])
-    return response["message"]["content"]
-
 def build_graph(collection, chunks_by_file, loan_index, aliases):
 
     def ask_llm(prompt: str) -> str:
@@ -402,26 +354,6 @@ def build_graph(collection, chunks_by_file, loan_index, aliases):
 
     return graph.compile()
 
-# ── main ──────────────────────────────────────────────────────────
-
-# if __name__ == "__main__":
-#     client = chromadb.PersistentClient(path=DB_DIR)
-#     collection = client.get_collection(COLLECTION_NAME)
-
-#     chunks_by_file, all_loans = load_all(LABELED_DIR)
-#     loan_index = build_loan_index(chunks_by_file)
-#     aliases = _build_alias_table(all_loans)
-
-#     questions = [
-#         "What is the Block at Orange loan?",
-#         "How many loans are in California?",
-#         "What is the average DSCR by property type?",
-#         "What are the risk factors for this trust?",
-#     ]
-
-#     for q in questions:
-#         print(f"\nQ: {q}")
-#         print(answer_question(collection, chunks_by_file, loan_index, aliases, q))
 
 if __name__ == "__main__":
     client = chromadb.PersistentClient(path=DB_DIR)

@@ -16,7 +16,7 @@ EMBED_MODEL = "nomic-embed-text"
 ANSWER_MODEL = "qwen2.5:14b"
 DB_DIR = os.path.join(os.path.dirname(__file__), "data", "chroma_db")
 COLLECTION_NAME = "cmbs_filings"
-LABELED_DIR = "./data/labeled_data"
+LABELED_DIR = os.path.join(os.path.dirname(__file__), "data", "labeled_data")
 
 
 def build_application():

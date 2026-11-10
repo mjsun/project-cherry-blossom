@@ -78,9 +78,6 @@ class QueryRouter:
             if isinstance(citation, dict)
         }
 
-        print(f"DEBUG _cited_sources: {len(sources)} sources, ids={list(by_id.keys())}")
-        print(f"DEBUG _cited_sources: raw citations={citations!r}")
-
         cited = []
         for source_id, quote in quotes.items():
             source = by_id.get(source_id)

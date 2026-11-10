@@ -12,13 +12,23 @@ class AnswerGenerator:
         labeled_sources: [{"id": "C0", "deal_id": ..., "chunk_index": ..., "text": ...}, ...]
         Returns {"answer": str, "citations": [{"id": str, "quote": str}]}.
         """
+        if not labeled_sources:
+            # No retrieved context at all -- never let the model answer from
+            # its own general knowledge here; refuse before it's even asked.
+            return {
+                "answer": "I don't have that filing. It hasn't been ingested yet.",
+                "citations": [],
+            }
+
         context = "\n\n---\n\n".join(
             f"[{source['id']}]\n{source['text']}" for source in labeled_sources
         )
 
         prompt = (
-            "Answer the question using ONLY the context below. Each block is "
-            "labeled with an id like [C0].\n\n"
+            "Answer the question using ONLY the context below. Do not use any "
+            "outside knowledge, even if you recognize the deal or company "
+            "named in the question -- if it isn't in the context, you don't "
+            "know it. Each block is labeled with an id like [C0].\n\n"
             f"Context:\n{context}\n\n"
             f"Question: {question}\n\n"
             "Respond with ONLY a JSON object (no other text), in this exact shape:\n"
@@ -32,9 +42,7 @@ class AnswerGenerator:
             'contain the answer, say so in "answer" and return "citations": [].'
         )
 
-        raw = self.ask(prompt, json_mode=True)
-        print(f"DEBUG answer_from_context raw model output: {raw!r}")
-        return self._parse_cited_response(raw)
+        return self._parse_cited_response(self.ask(prompt, json_mode=True))
 
     def answer_from_database(self, question, database_result):
         prompt = (

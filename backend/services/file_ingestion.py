@@ -26,7 +26,7 @@ class FileIngestionService:
         if on_step:
             on_step(0)
 
-        labeled = LabelLinesFromMemory(cleaned[0:100]).label()
+        labeled = LabelLinesFromMemory(cleaned).label()
         deal_id = urlparse(url).path.rsplit("/", 1)[-1] or urlparse(url).netloc
         tsv_lines = [f"{line}\t{label}" for line, label in labeled]
         ExtractToSqliteFromMemory(tsv_lines, deal_id).store()

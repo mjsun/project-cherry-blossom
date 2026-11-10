@@ -4,8 +4,8 @@ from backend.ai_module.app.llm import chat
 
 
 class AnswerGenerator:
-    def ask(self, prompt: str):
-        return chat(prompt)
+    def ask(self, prompt: str, *, json_mode: bool = False):
+        return chat(prompt, temperature=0 if json_mode else 0.7, json_mode=json_mode)
 
     def answer_from_context(self, question, labeled_sources):
         """
@@ -31,7 +31,7 @@ class AnswerGenerator:
             'contain the answer, say so in "answer" and return "citations": [].'
         )
 
-        return self._parse_cited_response(self.ask(prompt))
+        return self._parse_cited_response(self.ask(prompt, json_mode=True))
 
     def answer_from_database(self, question, database_result):
         prompt = (

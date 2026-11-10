@@ -1,10 +1,28 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+function renderWithHighlight(text, highlight) {
+  if (!highlight) return text;
+
+  const start = text.indexOf(highlight);
+  if (start === -1) return text;
+
+  const end = start + highlight.length;
+  return (
+    <>
+      {text.slice(0, start)}
+      <mark className="qa-highlight">{text.slice(start, end)}</mark>
+      {text.slice(end)}
+    </>
+  );
+}
+
 function CmbsQa() {
   const [message, setMessage] = useState("");
   const [query, setQuery] = useState("");
   const [result, setResult] = useState("");
+  const [route, setRoute] = useState("");
+  const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -18,6 +36,8 @@ function CmbsQa() {
     if (!query.trim() || loading) return;
 
     setResult("");
+    setRoute("");
+    setSources([]);
     setLoading(true);
 
     fetch("http://localhost:8000/api/query/", {
@@ -26,7 +46,11 @@ function CmbsQa() {
       body: JSON.stringify({ query }),
     })
       .then((res) => res.json())
-      .then((data) => setResult(data.answer))
+      .then((data) => {
+        setResult(data.answer);
+        setRoute(data.route);
+        setSources(data.sources || []);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -65,7 +89,32 @@ function CmbsQa() {
           </div>
         )}
 
-        {!loading && result && <p className="qa-result">{result}</p>}
+        {!loading && result && (
+          <div className="qa-result">
+            <p>{result}</p>
+
+            {route === "structured" && (
+              <p className="qa-source">Data from database</p>
+            )}
+
+            {route !== "structured" && sources.length > 0 && (
+              <div className="qa-source">
+                <span>Referenced chunk{sources.length > 1 ? "s" : ""}:</span>
+                <div className="qa-source-list">
+                  {sources.map((s, i) => (
+                    <details className="qa-chunk" key={i}>
+                      <summary>Chunk {s.chunk_index}</summary>
+                      <p className="qa-chunk-text">
+                        {renderWithHighlight(s.text, s.highlight)}
+                      </p>
+                      <footer className="qa-chunk-footnote">{s.deal_id}</footer>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );

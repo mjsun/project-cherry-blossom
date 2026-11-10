@@ -5,5 +5,6 @@ class QueryService:
         self.app = build_application()
 
     def query(self, query):
+        """Returns {"answer": str, "route": str, "sources": [...]}."""
         return self.app.answer(query)
 

@@ -8,8 +8,7 @@ router = APIRouter()
 def query(request: QueryModelRequest):
     qs = QueryService()
     result = qs.query(request.query)
-    return {"answer": result}
-    # return {"answer": result, "route": result["route"]}
+    return result
 
 
 

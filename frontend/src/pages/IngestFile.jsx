@@ -73,14 +73,21 @@ function IngestFile() {
   };
 
   return (
-    <div className="qa-page">
+    <div className="nx-page">
+      <nav className="nx-nav">
+        <Link to="/" className="nx-logo">GreenLight</Link>
+        <div className="nx-nav-links">
+          <Link to="/ingest-file">Ingest</Link>
+          <Link to="/cmbs-qa">Q&amp;A</Link>
+        </div>
+        <Link to="/" className="nx-btn nx-btn-outline">Back home</Link>
+      </nav>
+
       <header className="qa-header">
-        <Link to="/" className="qa-brand">GreenLight</Link>
-        <span className="qa-divider" />
         <span className="qa-title">Ingest File</span>
       </header>
 
-      <main className="qa-main">
+      <main className="nx-page-content">
         {status === null && (
           <>
             <p className="qa-subtitle">Paste a link to a prospectus document to ingest it.</p>
@@ -102,7 +109,7 @@ function IngestFile() {
                 onChange={(e) => setLink(e.target.value)}
                 required
               />
-              <button className="btn btn-primary" type="submit">Submit</button>
+              <button className="nx-btn nx-btn-dark" type="submit">Submit</button>
             </form>
           </>
         )}
@@ -147,8 +154,8 @@ function IngestFile() {
           <div className="ingest-done">
             <p className="qa-subtitle">Ingestion complete.</p>
             <div className="ingest-done-actions">
-              <Link to="/cmbs-qa" className="btn btn-primary">Go to Q&A</Link>
-              <button className="btn btn-outline" onClick={reset}>Ingest another file</button>
+              <Link to="/cmbs-qa" className="nx-btn nx-btn-dark">Go to Q&A</Link>
+              <button className="nx-btn nx-btn-outline" onClick={reset}>Ingest another file</button>
             </div>
           </div>
         )}

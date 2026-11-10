@@ -55,14 +55,21 @@ function CmbsQa() {
   };
 
   return (
-    <div className="qa-page">
+    <div className="nx-page">
+      <nav className="nx-nav">
+        <Link to="/" className="nx-logo">GreenLight</Link>
+        <div className="nx-nav-links">
+          <Link to="/ingest-file">Ingest</Link>
+          <Link to="/cmbs-qa">Q&amp;A</Link>
+        </div>
+        <Link to="/" className="nx-btn nx-btn-outline">Back home</Link>
+      </nav>
+
       <header className="qa-header">
-        <Link to="/" className="qa-brand">GreenLight</Link>
-        <span className="qa-divider" />
         <span className="qa-title">CMBS-QA</span>
       </header>
 
-      <main className="qa-main">
+      <main className="nx-page-content">
         <p className="qa-subtitle">{message}</p>
 
         <form className="qa-form" onSubmit={handleSubmit}>
@@ -74,7 +81,7 @@ function CmbsQa() {
             onChange={(e) => setQuery(e.target.value)}
           />
           <button
-            className="btn btn-primary"
+            className="nx-btn nx-btn-dark"
             type="submit"
             disabled={!query.trim() || loading}
           >

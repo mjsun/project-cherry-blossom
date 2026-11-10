@@ -29,6 +29,13 @@ class AnswerGenerator:
             "outside knowledge, even if you recognize the deal or company "
             "named in the question -- if it isn't in the context, you don't "
             "know it. Each block is labeled with an id like [C0].\n\n"
+            "Some blocks are narrative prose (full sentences); others are raw "
+            "table rows (short, pipe- or comma-separated fragments). When both "
+            "a prose block and a table-row block support the same point, "
+            "prefer the prose block for your answer and citation -- it's "
+            "clearer and more complete. Use a table-row block when the "
+            "question specifically asks for a number, date, or other tabular "
+            "figure that only appears there.\n\n"
             f"Context:\n{context}\n\n"
             f"Question: {question}\n\n"
             "Respond with ONLY a JSON object (no other text), in this exact shape:\n"
@@ -44,15 +51,24 @@ class AnswerGenerator:
         )
 
         result = self._parse_cited_response(self.ask(prompt, json_mode=True))
-        result["citations"] = self._verified_citations(result["citations"], labeled_sources)
+        result["citations"] = self._verified_citations(
+            result["citations"], labeled_sources, result["answer"]
+        )
         return result
 
     @staticmethod
-    def _verified_citations(citations, labeled_sources):
+    def _verified_citations(citations, labeled_sources, answer):
         """Drop any citation whose quote isn't an actual verbatim substring
         of the block it claims to come from -- an unverifiable citation is
         worse than none, since the UI highlights the quote inside the
-        source text."""
+        source text.
+
+        The model sometimes gets the id right but assembles a "quote" that
+        bleeds in text from a neighboring block. Before giving up on that
+        citation, check whether its own answer text is verbatim in the
+        cited block -- that's usually true even when the quote field itself
+        is mangled, and it's a simpler thing for the model to get right.
+        """
         texts_by_id = {source["id"]: source["text"] for source in labeled_sources}
 
         verified = []
@@ -60,9 +76,14 @@ class AnswerGenerator:
             if not isinstance(citation, dict):
                 continue
             block_text = texts_by_id.get(citation.get("id"))
+            if not block_text:
+                continue
+
             quote = citation.get("quote")
-            if block_text and isinstance(quote, str) and quote in block_text:
+            if isinstance(quote, str) and quote in block_text:
                 verified.append(citation)
+            elif isinstance(answer, str) and answer.strip() and answer in block_text:
+                verified.append({**citation, "quote": answer})
 
         return verified
 

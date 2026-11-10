@@ -11,8 +11,6 @@ from backend.ai_module.app.query_router import QueryRouter
 
 import os
 
-EMBED_MODEL = "nomic-embed-text"
-ANSWER_MODEL = "qwen2.5:14b"
 LABELED_DIR = os.path.join(os.path.dirname(__file__), "data", "labeled_data")
 
 
@@ -28,16 +26,11 @@ def build_application():
     classifier = QueryClassifier(aliases)
     structured_handler = StructuredQueryHandler()
 
-    retriever = Retriever(
-        collection=collection,
-        embedding_model=EMBED_MODEL,
-    )
+    retriever = Retriever(collection=collection)
 
     context_builder = ContextBuilder(chunks_by_file)
 
-    answer_generator = AnswerGenerator(
-        answer_model=ANSWER_MODEL,
-    )
+    answer_generator = AnswerGenerator()
 
     return QueryRouter(
         classifier=classifier,

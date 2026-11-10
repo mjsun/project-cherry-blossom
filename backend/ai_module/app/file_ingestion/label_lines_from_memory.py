@@ -1,9 +1,9 @@
 import json
 import re
-import ollama
 
-MODEL = 'qwen2.5:14b'
-BATCH = 10
+from backend.ai_module.app.llm import chat
+
+BATCH = 30
 
 LABELS = ["COVER", "SECTION", "SUBSECTION", "TERM", "BODY", "TABLE_TITLE", "TABLE_ROW", "FOOTNOTE", "NOISE"]
 
@@ -144,13 +144,7 @@ class LabelLinesFromMemory:
         numbered = "\n".join(f"{i+1}. {ln}" for i, ln in enumerate(lines))
         prompt = PROMPT.format(defs=DEFINITIONS, lines=numbered)
 
-        res = ollama.chat(
-            model=MODEL,
-            messages=[{'role': 'user', 'content': prompt}],
-            options={'temperature': 0},
-        )
-
-        text = res['message']['content'].strip()
+        text = chat(prompt, temperature=0).strip()
 
         start, end = text.find("["), text.rfind("]")
         if start == -1 or end == -1:

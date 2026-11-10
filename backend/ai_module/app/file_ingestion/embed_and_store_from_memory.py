@@ -2,7 +2,8 @@
 Embed chunks and load them into a local Chroma vector DB.
 
 Takes an already-built list of chunks (e.g. from ChunkFilingFromMemory) and:
-  1. embeds each chunk's embedding_text() via Ollama (nomic-embed-text)
+  1. embeds each chunk's embedding_text() via the configured LLM provider
+     (see ai_module/app/llm -- Ollama or OpenAI, picked by LLM_PROVIDER)
   2. stores it in Chroma, metadata = deal_id/series/index/label/start_line/end_line
   3. builds a plain loan_index: loan_key -> [chunk ids] for EXACT lookup
 
@@ -16,12 +17,11 @@ piece, so a question naming a deal can be searched within that deal only.
 """
 
 import re
-import ollama
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from backend.ai_module.app.chroma_client import get_collection
+from backend.ai_module.app.llm import embed
 
-EMBED_MODEL = "nomic-embed-text"
 MAX_EMBED_CHARS = 3000
 
 # Deal series code like "2024-5C7", "2026-B42", "2018-C2". Requires a letter
@@ -46,7 +46,7 @@ class EmbedAndStoreFromMemory:
 
     @staticmethod
     def _embed(text: str):
-        return ollama.embeddings(model=EMBED_MODEL, prompt=text)["embedding"]
+        return embed(text)
 
     def _split_for_embedding(self, text: str):
         if len(text) <= MAX_EMBED_CHARS:

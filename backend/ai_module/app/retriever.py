@@ -1,5 +1,6 @@
 import re
-import ollama
+
+from backend.ai_module.app.llm import embed
 
 SERIES_RE = re.compile(r"\b(\d{4}-[A-Z0-9]*[A-Z][A-Z0-9]*)\b", re.IGNORECASE)
 
@@ -7,20 +8,13 @@ class Retriever:
     def __init__(
         self,
         collection,
-        embedding_model: str,
         top_k: int = 25,
     ):
         self.collection = collection
-        self.embedding_model = embedding_model
         self.top_k = top_k
 
     def embed(self, text: str):
-        result = ollama.embeddings(
-            model=self.embedding_model,
-            prompt=text,
-        )
-
-        return result["embedding"]
+        return embed(text)
 
     def retrieve(self, question: str):
         embedding = self.embed(question)

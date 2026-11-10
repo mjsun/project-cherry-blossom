@@ -1,24 +1,11 @@
 import json
 
-import ollama
+from backend.ai_module.app.llm import chat
 
 
 class AnswerGenerator:
-    def __init__(self, answer_model: str):
-        self.answer_model = answer_model
-
     def ask(self, prompt: str):
-        response = ollama.chat(
-            model=self.answer_model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
-        )
-
-        return response["message"]["content"]
+        return chat(prompt)
 
     def answer_from_context(self, question, labeled_sources):
         """

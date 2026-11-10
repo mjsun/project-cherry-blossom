@@ -1,6 +1,5 @@
-import chromadb
-
 from chunk_filing import _build_alias_table
+from backend.ai_module.app.chroma_client import get_collection
 from backend.ai_module.app.data_loader import DataLoader
 from backend.ai_module.app.loan_index import LoanIndex
 from backend.ai_module.app.query_classifier import QueryClassifier
@@ -14,14 +13,11 @@ import os
 
 EMBED_MODEL = "nomic-embed-text"
 ANSWER_MODEL = "qwen2.5:14b"
-DB_DIR = os.path.join(os.path.dirname(__file__), "data", "chroma_db")
-COLLECTION_NAME = "cmbs_filings"
 LABELED_DIR = os.path.join(os.path.dirname(__file__), "data", "labeled_data")
 
 
 def build_application():
-    client = chromadb.PersistentClient(path=DB_DIR)
-    collection = client.get_collection(COLLECTION_NAME)
+    collection = get_collection()
 
     loader = DataLoader(LABELED_DIR)
     chunks_by_file, all_loans = loader.load()

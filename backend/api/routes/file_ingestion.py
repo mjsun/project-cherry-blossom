@@ -18,7 +18,6 @@ def query(request: FileIngestionRequest):
     except httpx.HTTPError as exc:
         raise HTTPException(status_code=400, detail=f"Failed to fetch link: {exc}")
     
-    prospectus = response.text
-    return {"success": True, "content": prospectus}
+    return {"success": True, "content": response}
 
 

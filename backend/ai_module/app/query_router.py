@@ -51,8 +51,9 @@ class QueryRouter:
     def _answer_narrative(self, question: str):
         hits = self.retriever.retrieve(question)
         positions = self.retriever.positions_from_hits(hits)
+        fallback_docs = self.retriever.fallback_text_from_hits(hits)
 
-        context = self.context_builder.build(positions)
+        context = self.context_builder.build(positions, fallback_docs=fallback_docs)
 
         return self.answer_generator.answer_from_context(
             question,

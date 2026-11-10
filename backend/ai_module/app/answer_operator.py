@@ -19,11 +19,15 @@ class AnswerGenerator:
         return response["message"]["content"]
 
     def answer_from_context(self, question, context):
+        if not context.strip():
+            return "I don't have that filing. It hasn't been ingested yet."
         prompt = (
             "Answer the question using ONLY the context below. "
             "If the context does not contain the answer, say so.\n\n"
             f"Context:\n{context}\n\n"
             f"Question: {question}\n"
+            "Answer in one or two short sentences, in your own words. "
+            "Do not quote the context.\n"
             "Answer:"
         )
 

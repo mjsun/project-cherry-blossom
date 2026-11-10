@@ -19,6 +19,7 @@ class AnswerGenerator:
         return response["message"]["content"]
 
     def answer_from_context(self, question, context):
+        print("=== CONTEXT ===\n", context[:4000])
         prompt = (
             "Answer the question using ONLY the context below. "
             "If the context does not contain the answer, say so.\n\n"

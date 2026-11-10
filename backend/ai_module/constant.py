@@ -78,3 +78,6 @@ GROUP_KEYWORDS = {
     "by property type": "general_property_type", "by seller": "seller",
     "by deal": "deal_id",
 }
+
+
+BLOCK_TAGS = {"p", "h1", "h2", "h3", "h4", "h5", "h6", "li"}

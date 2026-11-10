@@ -7,10 +7,11 @@ never import ollama/openai directly; they call chat()/embed() here.
 """
 
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
 PROVIDER = os.getenv("LLM_PROVIDER", "ollama").lower()
 
@@ -50,6 +51,9 @@ def chat(prompt: str, *, temperature: float = 0.7, json_mode: bool = False) -> s
     provider's own mechanism for it (OpenAI's response_format, Ollama's
     format="json") instead of relying on prompt wording alone.
     """
+    print(f"DEBUG chat: provider={PROVIDER!r} model={ANSWER_MODEL!r}")
+    print(f"DEBUG chat: prompt sent:\n{prompt}")
+
     if PROVIDER == "openai":
         extra = {"response_format": {"type": "json_object"}} if json_mode else {}
         response = _get_openai_client().chat.completions.create(
@@ -58,7 +62,9 @@ def chat(prompt: str, *, temperature: float = 0.7, json_mode: bool = False) -> s
             temperature=temperature,
             **extra,
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        print(f"DEBUG chat: response:\n{content}")
+        return content
 
     if PROVIDER == "ollama":
         import ollama
@@ -70,7 +76,9 @@ def chat(prompt: str, *, temperature: float = 0.7, json_mode: bool = False) -> s
             options={"temperature": temperature},
             **extra,
         )
-        return response["message"]["content"]
+        content = response["message"]["content"]
+        print(f"DEBUG chat: response:\n{content}")
+        return content
 
     raise ValueError(f"Unknown LLM_PROVIDER: {PROVIDER!r} (expected 'ollama' or 'openai')")
 

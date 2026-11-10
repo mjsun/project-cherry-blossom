@@ -60,8 +60,12 @@ class EmbedAndStoreFromMemory:
         """
         collection = get_collection()
 
-        # the cover page (first chunk) names the series
-        series = find_series(self.chunks[0].text()) if self.chunks else ""
+        # the cover page (one of the first few chunks) names the series
+        series = ""
+        for chunk in self.chunks[:5]:
+            series = find_series(chunk.text())
+            if series:
+                break
 
         loan_index = {}   # loan_key -> [chunk_id, ...]   (exact match)
         ids, docs, metas, embeddings = [], [], [], []

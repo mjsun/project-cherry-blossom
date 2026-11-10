@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE } from "../apiBase";
 
 const STEP_LABELS = [
   "Reading HTML and cleaning lines",
@@ -22,7 +23,7 @@ function IngestFile() {
 
   const pollStatus = (id) => {
     pollRef.current = setInterval(() => {
-      fetch(`http://localhost:8000/api/file_ingestion/status/${id}`)
+      fetch(`${API_BASE}/api/file_ingestion/status/${id}`)
         .then((res) => res.json())
         .then((data) => {
           setCompletedSteps(data.completed_steps || []);
@@ -46,7 +47,7 @@ function IngestFile() {
     setCompletedSteps([]);
     setStatus("running");
 
-    fetch("http://localhost:8000/api/file_ingestion/", {
+    fetch(`${API_BASE}/api/file_ingestion/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url, filename }),

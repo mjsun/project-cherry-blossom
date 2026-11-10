@@ -75,15 +75,18 @@ class AnswerGenerator:
         for citation in citations:
             if not isinstance(citation, dict):
                 continue
-            block_text = texts_by_id.get(citation.get("id"))
+            citation_id = citation.get("id")
+            if isinstance(citation_id, str):
+                citation_id = citation_id.strip("[]")
+            block_text = texts_by_id.get(citation_id)
             if not block_text:
                 continue
 
             quote = citation.get("quote")
             if isinstance(quote, str) and quote in block_text:
-                verified.append(citation)
+                verified.append({**citation, "id": citation_id})
             elif isinstance(answer, str) and answer.strip() and answer in block_text:
-                verified.append({**citation, "quote": answer})
+                verified.append({**citation, "id": citation_id, "quote": answer})
 
         return verified
 

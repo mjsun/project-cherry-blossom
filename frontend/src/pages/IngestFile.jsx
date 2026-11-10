@@ -15,7 +15,19 @@ function IngestFile() {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [status, setStatus] = useState(null); // null | "running" | "done" | "error"
   const [error, setError] = useState("");
+  const [batchProgress, setBatchProgress] = useState({ total: 0, done: 0 });
+  const [chunkProgress, setChunkProgress] = useState({ total: 0, done: 0 });
   const pollRef = useRef(null);
+
+  const SECONDS_PER_BATCH = 2;
+  const SECONDS_PER_CHUNK = 3;
+
+  const formatEta = (seconds) => {
+    if (seconds <= 0) return null;
+    if (seconds < 60) return `~${seconds}s remaining`;
+    const minutes = Math.ceil(seconds / 60);
+    return `~${minutes} min remaining`;
+  };
 
   useEffect(() => {
     return () => clearInterval(pollRef.current);
@@ -28,6 +40,14 @@ function IngestFile() {
         .then((data) => {
           setCompletedSteps(data.completed_steps || []);
           setStatus(data.status);
+          setBatchProgress({
+            total: data.total_batches || 0,
+            done: data.completed_batches || 0,
+          });
+          setChunkProgress({
+            total: data.total_chunks || 0,
+            done: data.completed_chunks || 0,
+          });
           if (data.status === "done" || data.status === "error") {
             clearInterval(pollRef.current);
             if (data.status === "error") setError(data.error || "Ingestion failed.");
@@ -45,6 +65,8 @@ function IngestFile() {
     e.preventDefault();
     setError("");
     setCompletedSteps([]);
+    setBatchProgress({ total: 0, done: 0 });
+    setChunkProgress({ total: 0, done: 0 });
     setStatus("running");
 
     fetch(`${API_BASE}/api/file_ingestion/`, {
@@ -69,6 +91,8 @@ function IngestFile() {
     setFilename("");
     setJobId(null);
     setCompletedSteps([]);
+    setBatchProgress({ total: 0, done: 0 });
+    setChunkProgress({ total: 0, done: 0 });
     setStatus(null);
     setError("");
   };
@@ -122,6 +146,20 @@ function IngestFile() {
               const isActive = !isDone && status === "running" &&
                 (i === 0 || completedSteps.includes(i - 1));
 
+              let eta = null;
+              let progressLabel = null;
+              if (isActive && i === 1 && batchProgress.total > 0) {
+                const remaining = batchProgress.total - batchProgress.done;
+                const current = Math.min(batchProgress.done + 1, batchProgress.total);
+                eta = formatEta(remaining * SECONDS_PER_BATCH);
+                progressLabel = `Batch ${current} / ${batchProgress.total} · ${remaining} remaining`;
+              } else if (isActive && i === 2 && chunkProgress.total > 0) {
+                const remaining = chunkProgress.total - chunkProgress.done;
+                const current = Math.min(chunkProgress.done + 1, chunkProgress.total);
+                eta = formatEta(remaining * SECONDS_PER_CHUNK);
+                progressLabel = `Chunk ${current} / ${chunkProgress.total} · ${remaining} remaining`;
+              }
+
               return (
                 <div className="ingest-step" key={i}>
                   <div className="ingest-step-icon">
@@ -140,6 +178,8 @@ function IngestFile() {
                         />
                       </div>
                     )}
+                    {progressLabel && <span className="ingest-step-eta">{progressLabel}</span>}
+                    {eta && <span className="ingest-step-eta">{eta}</span>}
                   </div>
                 </div>
               );

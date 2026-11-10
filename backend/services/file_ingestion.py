@@ -18,7 +18,9 @@ class FileIngestionService:
 
         return response
 
-    def loadFileByUrl(self, url, on_step=None):
+    def loadFileByUrl(self, url, on_step=None,
+                       on_total_batches=None, on_batch_done=None,
+                       on_total_chunks=None, on_chunk_done=None):
         response = self._loadHTMLByUrl(url)
         html = response.text
         lines = ExtractLinesFromMemory(html).extract()
@@ -26,7 +28,9 @@ class FileIngestionService:
         if on_step:
             on_step(0)
 
-        labeled = LabelLinesFromMemory(cleaned).label()
+        labeled = LabelLinesFromMemory(cleaned).label(
+            on_total_batches=on_total_batches, on_batch_done=on_batch_done,
+        )
         deal_id = urlparse(url).path.rsplit("/", 1)[-1] or urlparse(url).netloc
         tsv_lines = [f"{line}\t{label}" for line, label in labeled]
         ExtractToSqliteFromMemory(tsv_lines, deal_id).store()
@@ -34,6 +38,8 @@ class FileIngestionService:
             on_step(1)
 
         loans, chunks = ChunkFilingFromMemory(labeled, deal_id).process()
-        EmbedAndStoreFromMemory(chunks).store()
+        EmbedAndStoreFromMemory(chunks).store(
+            on_total_chunks=on_total_chunks, on_chunk_done=on_chunk_done,
+        )
         if on_step:
             on_step(2)

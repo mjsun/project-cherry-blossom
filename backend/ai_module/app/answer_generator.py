@@ -34,15 +34,37 @@ class AnswerGenerator:
             "Respond with ONLY a JSON object (no other text), in this exact shape:\n"
             '{"answer": "<your answer>", '
             '"citations": [{"id": "<block id you drew the answer from>", '
-            '"quote": "<a short phrase from that block that supports the answer -- '
-            'quote it verbatim if you can, otherwise paraphrase it closely>"}]}\n'
+            '"quote": "<the exact short phrase, copied character-for-character '
+            'from that block, that supports the answer -- it must appear '
+            'verbatim in the block text>"}]}\n'
             "If your answer draws on a block, you MUST cite that block's id -- "
             "never leave citations empty when the context actually supports the "
             "answer. Only cite a block you truly used. If the context doesn't "
             'contain the answer, say so in "answer" and return "citations": [].'
         )
 
-        return self._parse_cited_response(self.ask(prompt, json_mode=True))
+        result = self._parse_cited_response(self.ask(prompt, json_mode=True))
+        result["citations"] = self._verified_citations(result["citations"], labeled_sources)
+        return result
+
+    @staticmethod
+    def _verified_citations(citations, labeled_sources):
+        """Drop any citation whose quote isn't an actual verbatim substring
+        of the block it claims to come from -- an unverifiable citation is
+        worse than none, since the UI highlights the quote inside the
+        source text."""
+        texts_by_id = {source["id"]: source["text"] for source in labeled_sources}
+
+        verified = []
+        for citation in citations:
+            if not isinstance(citation, dict):
+                continue
+            block_text = texts_by_id.get(citation.get("id"))
+            quote = citation.get("quote")
+            if block_text and isinstance(quote, str) and quote in block_text:
+                verified.append(citation)
+
+        return verified
 
     def answer_from_database(self, question, database_result):
         prompt = (

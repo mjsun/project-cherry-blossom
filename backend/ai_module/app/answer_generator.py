@@ -24,10 +24,11 @@ class AnswerGenerator:
             "Respond with ONLY a JSON object (no other text), in this exact shape:\n"
             '{"answer": "<your answer>", '
             '"citations": [{"id": "<block id you drew the answer from>", '
-            '"quote": "<the exact short sentence or phrase, copied verbatim '
-            'from that block, that supports the answer>"}]}\n'
-            "Include one citation per block you actually used to answer -- "
-            "do not cite a block you didn't use. If the context doesn't "
+            '"quote": "<a short phrase from that block that supports the answer -- '
+            'quote it verbatim if you can, otherwise paraphrase it closely>"}]}\n'
+            "If your answer draws on a block, you MUST cite that block's id -- "
+            "never leave citations empty when the context actually supports the "
+            "answer. Only cite a block you truly used. If the context doesn't "
             'contain the answer, say so in "answer" and return "citations": [].'
         )
 

@@ -27,8 +27,14 @@ class Retriever:
                 n_results=self.top_k,
                 where={"series": match.group(1).upper()},
             )
-            # Deal named but not ingested -> no hits, rather than other deals.
-            return list(zip(result["documents"][0], result["metadatas"][0]))
+            hits = list(zip(result["documents"][0], result["metadatas"][0]))
+            print(f"DEBUG retrieve: series filter {match.group(1).upper()!r} -> {len(hits)} hits")
+            # Fall back to an unfiltered search if the named series doesn't
+            # match any stored metadata exactly (e.g. extraction formatted
+            # it differently) -- better a possibly-wrong-deal answer than
+            # silently returning nothing.
+            if hits:
+                return hits
 
         result = self.collection.query(
             query_embeddings=[embedding],

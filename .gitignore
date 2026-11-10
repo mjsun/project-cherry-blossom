@@ -220,3 +220,6 @@ __marimo__/
 
 chroma_dbchroma_db/
 chroma_db/
+
+# Hugging Face Space deploy clones (separate git repos, not part of this one)
+hf-space-frontend/

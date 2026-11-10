@@ -32,7 +32,9 @@ class AnswerGenerator:
             'contain the answer, say so in "answer" and return "citations": [].'
         )
 
-        return self._parse_cited_response(self.ask(prompt, json_mode=True))
+        raw = self.ask(prompt, json_mode=True)
+        print(f"DEBUG answer_from_context raw model output: {raw!r}")
+        return self._parse_cited_response(raw)
 
     def answer_from_database(self, question, database_result):
         prompt = (

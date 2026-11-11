@@ -14,7 +14,14 @@ import os
 import chromadb
 
 DB_DIR = os.path.join(os.path.dirname(__file__), "data", "chroma_db")
-COLLECTION_NAME = "cmbs_filings"
+
+COLLECTION_NAMES = {
+    "ollama": "cmbs_filing_ollama",
+    "openai": "cmbs_filing_openai",
+}
+
+PROVIDER = os.getenv("LLM_PROVIDER", "ollama").lower()
+COLLECTION_NAME = COLLECTION_NAMES.get(PROVIDER, COLLECTION_NAMES["ollama"])
 
 _client = chromadb.PersistentClient(path=DB_DIR)
 _collection = _client.get_or_create_collection(COLLECTION_NAME)

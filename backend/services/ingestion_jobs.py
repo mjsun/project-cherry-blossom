@@ -18,6 +18,10 @@ def create_job():
             "status": "running",
             "completed_steps": [],
             "error": None,
+            "total_batches": 0,
+            "completed_batches": 0,
+            "total_chunks": 0,
+            "completed_chunks": 0,
         }
     return job_id
 
@@ -25,6 +29,28 @@ def create_job():
 def mark_step_done(job_id, step_index):
     with _lock:
         _jobs[job_id]["completed_steps"].append(step_index)
+
+
+def set_total_batches(job_id, total):
+    with _lock:
+        _jobs[job_id]["total_batches"] = total
+        _jobs[job_id]["completed_batches"] = 0
+
+
+def mark_batch_done(job_id):
+    with _lock:
+        _jobs[job_id]["completed_batches"] += 1
+
+
+def set_total_chunks(job_id, total):
+    with _lock:
+        _jobs[job_id]["total_chunks"] = total
+        _jobs[job_id]["completed_chunks"] = 0
+
+
+def mark_chunk_done(job_id):
+    with _lock:
+        _jobs[job_id]["completed_chunks"] += 1
 
 
 def mark_done(job_id):

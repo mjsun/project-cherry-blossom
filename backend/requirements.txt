@@ -3,3 +3,7 @@ uvicorn
 python-dotenv
 openai
 ollama
+chromadb
+langchain-text-splitters
+beautifulsoup4
+httpx

@@ -1,7 +1,12 @@
 import re
 
 from backend.ai_module.constant import STRUCTURED_PATTERNS
-from chunk_filing import _keys_from_names
+
+
+def _keys_from_names(text, aliases):
+    """Loan keys from property names mentioned without their number."""
+    return [key for name, key in aliases
+            if re.search(r"\b" + re.escape(name) + r"\b", text, re.IGNORECASE)]
 
 
 class QueryClassifier:

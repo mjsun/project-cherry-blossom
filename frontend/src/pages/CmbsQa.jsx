@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE } from "../apiBase";
 
 function renderWithHighlight(text, highlight) {
   if (!highlight) return text;
@@ -26,7 +27,7 @@ function CmbsQa() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8000/home/")
+    fetch(`${API_BASE}/home/`)
       .then((res) => res.json())
       .then((data) => setMessage(data));
   }, []);
@@ -40,7 +41,7 @@ function CmbsQa() {
     setSources([]);
     setLoading(true);
 
-    fetch("http://localhost:8000/api/query/", {
+    fetch(`${API_BASE}/api/query/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),

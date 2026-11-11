@@ -3,7 +3,7 @@ import re
 
 from backend.ai_module.app.llm import chat
 
-BATCH = 30
+BATCH = 10
 
 LABELS = ["COVER", "SECTION", "SUBSECTION", "TERM", "BODY", "TABLE_TITLE", "TABLE_ROW", "FOOTNOTE", "NOISE"]
 
@@ -153,7 +153,7 @@ class LabelLinesFromMemory:
         labels = [str(x).strip().upper() for x in json.loads(text[start:end + 1])]
         return [x if x in LABELS else "BODY" for x in labels]
 
-    def label(self):
+    def label(self, on_total_batches=None, on_batch_done=None):
         """Run the full rule+model labeling pipeline and return (line, label) tuples."""
         lines = self.lines
         if not lines:
@@ -167,9 +167,14 @@ class LabelLinesFromMemory:
               f"({100*(len(lines)-len(todo))/len(lines):.0f}%) "
               f"-> {len(todo)} lines to the model")
 
-        for i in range(0, len(todo), BATCH):
+        if on_total_batches:
+            on_total_batches(-(-len(todo) // BATCH))  # ceil division
+
+        total_batches = -(-len(todo) // BATCH)
+        for batch_num, i in enumerate(range(0, len(todo), BATCH), start=1):
             idxs = todo[i:i + BATCH]
             batch = [lines[j] for j in idxs]
+            print(f"labeling batch {batch_num} / {total_batches}")
             try:
                 todo_labels = self.label_batch(batch)
             except Exception as e:
@@ -182,6 +187,8 @@ class LabelLinesFromMemory:
             for m, l in zip(idxs, todo_labels):
                 labels[m] = l
             print(f"model-labeled {min(i+BATCH, len(todo))} / {len(todo)}")
+            if on_batch_done:
+                on_batch_done()
 
         result = list(zip(lines, labels))
 

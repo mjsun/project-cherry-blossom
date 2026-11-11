@@ -18,6 +18,10 @@ def _run_ingestion(job_id: str, url: str):
         fi.loadFileByUrl(
             url,
             on_step=lambda step_index: ingestion_jobs.mark_step_done(job_id, step_index),
+            on_total_batches=lambda total: ingestion_jobs.set_total_batches(job_id, total),
+            on_batch_done=lambda: ingestion_jobs.mark_batch_done(job_id),
+            on_total_chunks=lambda total: ingestion_jobs.set_total_chunks(job_id, total),
+            on_chunk_done=lambda: ingestion_jobs.mark_chunk_done(job_id),
         )
         ingestion_jobs.mark_done(job_id)
     except Exception as exc:

@@ -683,6 +683,13 @@ a {
   background: rgba(10, 10, 10, 0.25);
 }
 
+.ingest-step-eta {
+  display: block;
+  font-size: 12px;
+  margin-top: 6px;
+  color: var(--nx-text-muted, #888);
+}
+
 .ingest-progress-bar--active {
   background: var(--nx-text);
   animation: ingest-progress-slide 1.2s ease-in-out infinite;

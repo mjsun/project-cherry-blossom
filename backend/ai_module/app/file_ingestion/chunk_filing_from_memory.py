@@ -51,9 +51,6 @@ class Chunk:
 
 
 class ChunkFilingFromMemory:
-    """Same pipeline as chunk_filing.process_file, but takes labeled lines
-    already in memory -- e.g. [(line, label), ...] from LabelLinesFromMemory --
-    instead of reading/parsing a .tsv file."""
 
     def __init__(self, labeled_lines, deal_id: str):
         self.labeled_lines = labeled_lines

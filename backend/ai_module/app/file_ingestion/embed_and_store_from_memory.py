@@ -53,18 +53,25 @@ class EmbedAndStoreFromMemory:
             return [text]
         return self._splitter.split_text(text)
 
-    def store(self):
+    def store(self, on_total_chunks=None, on_chunk_done=None):
         """
         Embed every chunk, upsert into Chroma.
         Returns (collection, loan_index) for later retrieval.
         """
         collection = get_collection()
 
-        # the cover page (first chunk) names the series
-        series = find_series(self.chunks[0].text()) if self.chunks else ""
+        # the cover page (one of the first few chunks) names the series
+        series = ""
+        for chunk in self.chunks[:5]:
+            series = find_series(chunk.text())
+            if series:
+                break
 
         loan_index = {}   # loan_key -> [chunk_id, ...]   (exact match)
         ids, docs, metas, embeddings = [], [], [], []
+
+        if on_total_chunks:
+            on_total_chunks(len(self.chunks))
 
         for chunk in self.chunks:
             text = chunk.embedding_text()
@@ -87,6 +94,9 @@ class EmbedAndStoreFromMemory:
 
                 for key in chunk.loan_keys:
                     loan_index.setdefault(key, []).append(chunk_id)
+
+            if on_chunk_done:
+                on_chunk_done()
 
         if ids:
             collection.upsert(ids=ids, documents=docs, metadatas=metas,

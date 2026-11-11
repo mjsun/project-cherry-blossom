@@ -7,10 +7,11 @@ never import ollama/openai directly; they call chat()/embed() here.
 """
 
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
 PROVIDER = os.getenv("LLM_PROVIDER", "ollama").lower()
 
@@ -43,25 +44,41 @@ def _get_openai_client():
     return _openai_client
 
 
-def chat(prompt: str, *, temperature: float = 0.7) -> str:
-    """Send a single user-turn prompt, return the model's text reply."""
+def chat(prompt: str, *, temperature: float = 0.7, json_mode: bool = False) -> str:
+    """Send a single user-turn prompt, return the model's text reply.
+
+    json_mode constrains the model to emit valid JSON, using each
+    provider's own mechanism for it (OpenAI's response_format, Ollama's
+    format="json") instead of relying on prompt wording alone.
+    """
+    print(f"DEBUG chat: provider={PROVIDER!r} model={ANSWER_MODEL!r}")
+    print(f"DEBUG chat: prompt sent:\n{prompt}")
+
     if PROVIDER == "openai":
+        extra = {"response_format": {"type": "json_object"}} if json_mode else {}
         response = _get_openai_client().chat.completions.create(
             model=ANSWER_MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=temperature,
+            **extra,
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        print(f"DEBUG chat: response:\n{content}")
+        return content
 
     if PROVIDER == "ollama":
         import ollama
 
+        extra = {"format": "json"} if json_mode else {}
         response = ollama.chat(
             model=ANSWER_MODEL,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": temperature},
+            **extra,
         )
-        return response["message"]["content"]
+        content = response["message"]["content"]
+        print(f"DEBUG chat: response:\n{content}")
+        return content
 
     raise ValueError(f"Unknown LLM_PROVIDER: {PROVIDER!r} (expected 'ollama' or 'openai')")
 

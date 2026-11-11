@@ -220,3 +220,11 @@ __marimo__/
 
 chroma_dbchroma_db/
 chroma_db/
+chroma_db_bak/
+*/data/chroma_db/
+*/data/chroma_db_bak/
+
+# Hugging Face Space deploy clones (separate git repos, not part of this one)
+hf-space-frontend/
+hf-space-backend/
+.capstone_venv/

@@ -1,6 +1,6 @@
 import re
 
-from loan_db import search_loans, aggregate
+from backend.ai_module.app.loan_db import search_loans, aggregate
 from backend.ai_module.constant import (
     STATE_MAP,
     PROPERTY_TYPES,
